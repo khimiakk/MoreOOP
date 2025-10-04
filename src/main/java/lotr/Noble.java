@@ -5,7 +5,7 @@ import java.util.Random;
 import lotr.strategy.KickStrategy;
 import lotr.strategy.NobleKickStrategy;
 
-public class Noble extends Character{
+public abstract class Noble extends Character{
 
     private static Random RANDOM = new Random();
 

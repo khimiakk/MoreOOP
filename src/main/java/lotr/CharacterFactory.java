@@ -1,11 +1,7 @@
 package lotr;
 
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Random;
-import java.lang.reflect.Modifier;
-
-import org.reflections.Reflections;
+import java.lang.reflect.*;
+import java.util.*;
 
 public class CharacterFactory {
 
@@ -24,23 +20,26 @@ public class CharacterFactory {
     //     return null;
     // }
 
-    private static final Random random = new Random();
+    private static final List<Class<? extends Character>> characterClasses = Arrays.asList(
+        Hobbit.class, Elf.class, King.class, Knight.class
+    );
 
     private Character fallback() {
         return new Knight();
     }
 
     public Character createCharacter() {
-        Reflections reflections = new Reflections("lotr");
-        ArrayList<Class<? extends Character>> characterClasses = new ArrayList<>(reflections.getSubTypesOf(Character.class));
-        characterClasses.removeIf(characterClass -> Modifier.isAbstract(characterClass.getModifiers()));
-        int randomIndex = random.nextInt(characterClasses.size());
+        final Random random = new Random();
+        
+        int choice = random.nextInt(characterClasses.size());
+        Class<? extends Character> characterClass = characterClasses.get(choice);
+
         try {
-            Constructor<? extends Character> constructor = characterClasses.get(randomIndex).getDeclaredConstructor();
+            Constructor<? extends Character> constructor = characterClass.getConstructor();
             return constructor.newInstance();
-        } catch (Exception ignore) {
+        } 
+        catch (Exception e) {
             return fallback();
         }
     }
 }
-
